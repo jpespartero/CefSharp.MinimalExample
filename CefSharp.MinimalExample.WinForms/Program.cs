@@ -4,6 +4,7 @@
 
 using CefSharp.WinForms;
 using System;
+using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 
@@ -26,6 +27,17 @@ namespace CefSharp.MinimalExample.WinForms
             //Example of setting a command line argument
             //Enables WebRTC
             settings.CefCommandLineArgs.Add("enable-media-stream", "1");
+
+            // Custom scheme for memory images
+            CefCustomScheme cefImagesInMemoryScheme = new CefCustomScheme
+            {
+                SchemeName = ImageMemorySchemeHandlerFactory.SchemeName,
+                SchemeHandlerFactory = new ImageMemorySchemeHandlerFactory()
+            };
+            settings.RegisterScheme(cefImagesInMemoryScheme);
+
+            Bitmap image = new Bitmap("test.png");
+            ImageMemorySchemeHandlerFactory.AddImage("test.png", image);
 
             //Perform dependency check to make sure all relevant resources are in our output directory.
             Cef.Initialize(settings, performDependencyCheck: true, browserProcessHandler: null);
